@@ -38,7 +38,7 @@ public class QRCodeUtils {
                 if (!bitMatrix.get(r, c)) {
                     builder.append("\033[47m   \033[0m");
                 } else {
-                    builder.append("\033[40m   \033[0m");
+                    builder.append("\033[50m   \033[0m");
                 }
             }
             builder.append("\n");
