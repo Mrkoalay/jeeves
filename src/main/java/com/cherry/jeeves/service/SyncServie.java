@@ -52,27 +52,30 @@ public class SyncServie {
                 cacheService.getBaseRequest().getSid(),
                 cacheService.getBaseRequest().getSkey(),
                 cacheService.getSyncKey());
-        int retCode = syncCheckResponse.getRetcode();
-        int selector = syncCheckResponse.getSelector();
-        logger.info(String.format("[SYNCCHECK] retcode = %s, selector = %s", retCode, selector));
-        if (retCode == RetCode.NORMAL.getCode()) {
-            //有新消息
-            if (selector == Selector.NEW_MESSAGE.getCode()) {
-                onNewMessage();
-            } else if (selector == Selector.ENTER_LEAVE_CHAT.getCode()) {
-                sync();
-            } else if (selector == Selector.CONTACT_UPDATED.getCode()) {
-                sync();
-            } else if (selector == Selector.UNKNOWN1.getCode()) {
-                sync();
-            } else if (selector == Selector.UNKNOWN6.getCode()) {
-                sync();
-            } else if (selector != Selector.NORMAL.getCode()) {
-                throw new WechatException("syncCheckResponse ret = " + retCode);
+        if (syncCheckResponse != null) {
+            int retCode = syncCheckResponse.getRetcode();
+            int selector = syncCheckResponse.getSelector();
+            logger.info(String.format("[SYNCCHECK] retcode = %s, selector = %s", retCode, selector));
+            if (retCode == RetCode.NORMAL.getCode()) {
+                //有新消息
+                if (selector == Selector.NEW_MESSAGE.getCode()) {
+                    onNewMessage();
+                } else if (selector == Selector.ENTER_LEAVE_CHAT.getCode()) {
+                    sync();
+                } else if (selector == Selector.CONTACT_UPDATED.getCode()) {
+                    sync();
+                } else if (selector == Selector.UNKNOWN1.getCode()) {
+                    sync();
+                } else if (selector == Selector.UNKNOWN6.getCode()) {
+                    sync();
+                } else if (selector != Selector.NORMAL.getCode()) {
+                    throw new WechatException("syncCheckResponse ret = " + retCode);
+                }
+            } else {
+                throw new WechatException("syncCheckResponse selector = " + selector);
             }
-        } else {
-            throw new WechatException("syncCheckResponse selector = " + selector);
         }
+
     }
 
     private SyncResponse sync() throws IOException {
